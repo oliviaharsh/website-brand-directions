@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-direction="signal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#F4F4EC">
+  <meta name="description" content="Four new website directions for Avantix Labs. Compare live 3D, layouts, fonts and colors. Prepared for Harsh and Parth by Codex.">
+  <title>Four new website themes | Avantix Labs</title>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#hero">Skip to website preview</a>
+  <div class="review-tools">
+    <div class="review-label">Four new <strong>website</strong> directions</div>
+    <div class="picker" role="group" aria-label="Choose a website direction">
+      <button data-pick="signal" aria-pressed="true">Signal Bureau</button>
+      <button data-pick="nocturne" aria-pressed="false">Nocturne</button>
+      <button data-pick="garnet" aria-pressed="false">Garnet House</button>
+      <button data-pick="ember" aria-pressed="false">Ember Studio</button>
+    </div>
+    <a href="#review">Note for Parth</a>
+  </div>
+  <header class="site-header wrap">
+    <a class="brand" href="../">AVANTIX <span>LABS</span></a>
+    <nav aria-label="Website preview"><a href="#services">What we build</a><a href="#direction">Fonts &amp; colors</a><a href="#compare">Compare all four</a></nav>
+  </header>
+  <main>
+    <section class="hero wrap" id="hero" aria-labelledby="headline">
+      <div class="hero-copy">
+        <p class="eyebrow">Creative technology, built for business.</p>
+        <h1 id="headline">Less busywork.<br>More business.</h1>
+        <p class="hero-description" id="hero-description">Websites, automation and AI agents that turn attention into action.</p>
+        <a class="cta" href="#services">Explore services <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="hero-art">
+        <div class="stage" id="stage">
+          <img id="fallback" src="assets/signal.jpg" alt="Graphite rails with a citron carrier, the Signal Bureau visual direction" width="1536" height="1024" fetchpriority="high">
+          <canvas id="canvas" aria-label="Interactive 3D sculpture for the selected website theme" role="img"></canvas>
+        </div>
+        <div class="art-controls"><span id="render-status" role="status">Loading 3D preview</span><button id="motion" type="button" disabled>Pause motion</button></div>
+      </div>
+    </section>
+    <section class="services wrap" id="services">
+      <h2 id="service-heading">Make room for better work.</h2>
+      <div class="service-list">
+        <details open><summary><span>Websites &amp; web apps</span><span aria-hidden="true">+</span></summary><p>A clear offer, a memorable first impression and a straightforward path to enquiry.</p></details>
+        <details><summary><span>Business automation</span><span aria-hidden="true">+</span></summary><p>Connect enquiries, follow-ups and everyday tasks so your team spends less time moving information around.</p></details>
+        <details><summary><span>AI agents</span><span aria-hidden="true">+</span></summary><p>Assistants grounded in your business information, with defined boundaries and human handover.</p></details>
+        <details><summary><span>Booking &amp; payments</span><span aria-hidden="true">+</span></summary><p>Let customers book and pay, with confirmations and reminders that keep the process moving.</p></details>
+      </div>
+    </section>
+    <section class="direction wrap" id="direction" aria-labelledby="direction-title">
+      <div class="direction-intro"><h2 id="direction-title">Signal Bureau</h2><p id="direction-summary"></p></div>
+      <div class="spec-grid">
+        <div class="type-spec"><h3>Typography</h3><p class="display-sample">Built with intent.</p><p id="font-pair"></p><p class="body-sample">A memorable website should make your business easier to understand, and easier to choose.</p><p class="muted" id="type-note"></p></div>
+        <div class="color-spec"><h3>Color palette</h3><div class="palette" id="palette"></div><p class="muted">Select a swatch to copy its hex code.</p><h3>3D &amp; motion</h3><p id="motion-note"></p></div>
+      </div>
+      <p class="concept-note">These are website design prototypes. Headlines are draft options; sculpture images are art-direction references. No final theme or tagline has been selected.</p>
+    </section>
+    <section class="compare wrap" id="compare">
+      <h2>Find your direction.</h2>
+      <p class="section-description">Compare the atmosphere, then open each live preview to feel the typography and layout.</p>
+      <div class="comparison-grid" id="comparison-grid"></div>
+    </section>
+    <aside class="review wrap" id="review">
+      <h2>Parth, help us choose.</h2>
+      <p>These are four additional <strong>website themes</strong> for Avantix Labs. Try each on your laptop and phone, open the service sections, and compare the fonts, palette and 3D motion.</p>
+      <p>Send Harsh your top two theme names, which layout you prefer, and anything you would change. We can combine a favorite palette with a different font pairing or sculpture.</p>
+      <p class="review-signature">Prepared by Codex for Harsh and Parth, 6 October 2026.</p>
+      <button class="cta" id="share">Copy this theme link</button>
+    </aside>
+  </main>
+  <footer class="wrap"><span>AVANTIX LABS / Website direction review</span><div><a href="../">Original four themes</a><a href="../3d/">Earlier 3D lab</a><a href="../logos/concepts.html">Logo options</a><a href="https://github.com/oliviaharsh/website-brand-directions">GitHub</a></div></footer>
+  <p class="toast" id="toast" role="status" aria-live="polite"></p>
+  <noscript><p class="wrap">JavaScript is needed to switch themes and view the 3D previews. You can read all four directions in <a href="README.md">the theme guide</a>.</p></noscript>
+</body>
+</html>

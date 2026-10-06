@@ -1,5 +1,24 @@
 # Avantix Labs: Brand Directions
 
+## New: four additional website themes for Parth to review
+
+**[Open the four new website themes with live 3D](https://oliviaharsh.github.io/website-brand-directions/themes/)**
+
+Parth, these are four additional **website directions** for AVANTIX LABS, with different layouts, font pairings, color palettes and 3D sculptures. Switch using the buttons at the top, explore the service sections, and compare the typography and colors below. Please send Harsh your favorite two names and any changes you would make. The page has a button to copy a direct link to each theme.
+
+Prepared by **Codex** for Harsh and Parth on 6 October 2026.
+
+| Theme | Visual character | Fonts | Layout and 3D |
+|---|---|---|---|
+| [Signal Bureau](https://oliviaharsh.github.io/website-brand-directions/themes/#signal) | Warm paper, graphite, citron | Barlow Condensed + Public Sans | Condensed type on the left, moving mechanical rails on the right |
+| [Nocturne](https://oliviaharsh.github.io/website-brand-directions/themes/#nocturne) | Midnight navy, pearl, aquamarine | Unbounded + Onest | Glass fan leads on the left, geometric headline on the right |
+| [Garnet House](https://oliviaharsh.github.io/website-brand-directions/themes/#garnet) | Burgundy, porcelain, dusty rose | Cormorant Garamond + Karla | Editorial serif, folded satin ribbon, staggered service layout |
+| [Ember Studio](https://oliviaharsh.github.io/website-brand-directions/themes/#ember) | Charcoal, chalk, copper | Urbanist + Work Sans | Centered headline, wide linked-metal sculpture, asymmetric service tiles |
+
+These are design prototypes for choosing a direction. Draft headlines remain open for selection. Each theme includes an actual WebGL scene and a generated still-image reference. Fonts and the 3D library are served from this repository. Reduced motion and image fallback are supported.
+
+[Read the new theme guide](themes/README.md). All earlier theme and logo studies remain available below.
+
 ## Latest logo review for Parth — from Codex
 
 **[Open the eight AVANTIX LABS logo options](https://oliviaharsh.github.io/website-brand-directions/logos/concepts.html)**

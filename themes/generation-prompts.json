@@ -1,0 +1,26 @@
+[
+  {
+    "id": "signal",
+    "name": "Signal Bureau",
+    "prompt": "Create a premium CGI art-direction hero image for AVANTIX LABS, a sophisticated web development and AI automation studio. NO TEXT, NO LOGOS, NO UI. Horizontal 3:2 composition. Light warm-white paper studio background #F4F4EC with a monumental precision-machined graphite sculptural system: three overlapping thick rectangular rounded rails standing in space, interrupted by one acid-citron #D1DE59 rectangular carrier block. Fine brushed graphite metal with soft controlled highlights, exact joinery, beautiful realistic contact shadows, side-lit luxury industrial product photography. Object centered with generous margins, occupies 65 percent of frame. International Swiss design mood, sophisticated practical intelligence, crisp and highly tactile, never neon, never generic blobs. Clean enough to function as an actual website hero visual.",
+    "asset": "assets/signal.jpg"
+  },
+  {
+    "id": "nocturne",
+    "name": "Nocturne",
+    "prompt": "Create a high-end CGI art-direction hero image for AVANTIX LABS web development and AI automation studio. NO TEXT, NO LOGOS, NO UI. Horizontal 3:2 composition on uniform deep midnight navy #081B26. A sculptural fan of seven tall architectural fins with rounded ends in smoked aquamarine optical glass #91DDD2 and a dark titanium spine, floating at a slight angle. Luminous soft-box edge reflections, layered translucent glass, delicate caustic shadows, luxurious restrained museum lighting. Centered sculpture occupies 65 percent with generous empty border. Oceanic, composed, cinematic, extremely premium. No blue neon beams, particles, space backgrounds, glowing grid, or gradient haze.",
+    "asset": "assets/nocturne.jpg"
+  },
+  {
+    "id": "garnet",
+    "name": "Garnet House",
+    "prompt": "Create an exceptional luxury CGI art-direction hero image for AVANTIX LABS creative technology studio. NO TEXT, NO LOGOS, NO UI. Horizontal 3:2 composition. Background deep burgundy #3A1727. One continuous broad folded satin ribbon loop twists into a sculptural abstract architectural arch, soft rose satin #D5A6B4 on one side and rich garnet lacquer on the other. Crisp folded edges, visible thickness, highly realistic anisotropic reflections, beautiful rose-tinted studio lighting, couture material meets engineered geometry. Sculpture centered occupying 65 percent with generous margins. Editorial fashion-house sophistication, unusually tasteful restrained colors, subtle shadows. No balloons, letters, logos, glitter, flowers or generic torus blobs.",
+    "asset": "assets/garnet.jpg"
+  },
+  {
+    "id": "ember",
+    "name": "Ember Studio",
+    "prompt": "Create an exquisite premium CGI art-direction hero image for AVANTIX LABS, a web development and AI automation studio. NO TEXT, NO LOGOS, NO UI. Horizontal 3:2 composition. Uniform warm charcoal #1B1B18 background. Two large sculptural interlocking rounded rectangular chain links in soft burnished copper #E9AF88 and smoked brushed metal, on a low charcoal surface. Volumetric solid metal with gently rounded bevels, realistic brushed copper microtexture, precise studio highlights and strong tactile contact shadows. Wide horizontal arrangement, sculpture centered taking 70 percent with empty margins. Architectural, confident, crafted industrial luxury. No neon, flames, sparks, decorative UI, floating particles or chrome rainbow.",
+    "asset": "assets/ember.jpg"
+  }
+]
