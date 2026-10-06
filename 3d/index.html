@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>3D Brand Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Hanken+Grotesk:wght@300..700&family=Schibsted+Grotesk:wght@400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@400..800&family=Figtree:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Outfit:wght@300..600&display=swap">
+<style>
+/* Layout: a fixed full-bleed WebGL stage; the homepage preview and a 3-step scroll story float over it; an opaque spec sheet and a side-by-side comparison follow. Each brand theme rewrites every token below. */
+:root{
+  --bg:#0D0F12; --surface:#171A1F; --ink:#ECEEF1; --muted:#8C93A0; --accent:#8E9BFF; --accent-ink:#0D0F12; --line:rgba(236,238,241,.14);
+  --display:'Archivo', system-ui, sans-serif; --display-weight:700; --display-stretch:125%; --display-style:normal; --display-track:-0.035em;
+  --h1-size:clamp(40px,6vw,96px);
+  --body:'Geist', system-ui, sans-serif; --mono:'Geist Mono', ui-monospace, monospace;
+  --radius:6px; --radius-card:10px;
+  --gutter:clamp(16px,4vw,56px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background-color .5s,color .5s;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;opacity:1;transition:opacity .28s ease}
+#stage.fading{opacity:0}
+.no-webgl #stage{display:none}
+.no-webgl body{background:radial-gradient(60% 60% at 70% 40%,var(--surface),var(--bg))}
+
+.disp{font-family:var(--display);font-weight:var(--display-weight);font-stretch:var(--display-stretch);font-style:var(--display-style);letter-spacing:var(--display-track)}
+.label{font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(env(safe-area-inset-top,0px) + 18px) var(--gutter) 18px}
+.topbar{background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 88%,transparent),color-mix(in srgb,var(--bg) 0%,transparent));transition:background .5s}
+.wordmark{font-size:19px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.topnav{display:flex;gap:28px;font-size:14px;color:var(--muted)}
+.topnav span{cursor:default}
+.topright{display:flex;align-items:center;gap:14px}
+.preview-tag{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:8px 12px;white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 22px;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);font:600 15px/1 var(--body);text-decoration:none;transition:transform .2s,background-color .5s,color .5s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:11px 16px;font-size:13px}
+.btn svg{width:16px;height:16px}
+
+/* hero */
+.wrap{position:relative;z-index:1;padding-inline:var(--gutter)}
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-block:120px 150px}
+.hero-copy{max-width:min(660px,100%)}
+.headline{font-size:var(--h1-size);line-height:.98;margin:18px 0 24px;text-wrap:balance}
+.sub{font-size:clamp(17px,1.35vw,20px);color:var(--muted);max-width:44ch;margin:0 0 32px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* story */
+.step{min-height:88svh;display:flex;align-items:center}
+.step-card{max-width:440px;padding:28px 28px 22px;border:1px solid var(--line);border-radius:var(--radius-card);background:color-mix(in srgb,var(--bg) 66%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.step-card .label{color:var(--accent)}
+.step-card h2{font-size:clamp(28px,3vw,42px);line-height:1.05;margin:12px 0 12px}
+.step-card p{margin:0;color:var(--ink);opacity:.86}
+.step-card .note{font:400 12px/1.5 var(--mono);color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:18px;letter-spacing:.02em}
+
+/* spec sheet */
+.sheet{position:relative;z-index:2;background:var(--bg);border-top:1px solid var(--line);padding:80px var(--gutter) 150px;transition:background-color .5s}
+.sheet-inner{max-width:1280px;margin:0 auto}
+.sheet-head{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:end}
+.sheet-head > *{min-width:0}
+.theme-name{font-size:clamp(44px,6.4vw,96px);line-height:.95;margin:14px 0 0;text-wrap:balance}
+.ref{color:var(--muted);margin:0 0 18px;max-width:52ch}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags span{border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:13px}
+.tags .pick{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.sec{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:12px;margin:72px 0 28px}
+
+.palette{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.swatch{display:flex;flex-direction:column;gap:3px;text-align:left;background:none;border:0;padding:0;color:var(--ink);min-width:0}
+.chip{height:132px;border-radius:var(--radius-card);border:1px solid var(--line);margin-bottom:12px;transition:transform .2s}
+.swatch:hover .chip{transform:translateY(-3px)}
+.sw-name{font-weight:600;font-size:15px}
+.sw-role{color:var(--muted);font-size:13px}
+.sw-hex{font:500 13px/1.5 var(--mono);font-variant-numeric:tabular-nums}
+.sw-ratio{font:400 12px/1.5 var(--mono);color:var(--muted)}
+
+.type-row{display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;padding:30px 0;border-bottom:1px solid var(--line)}
+.type-row:first-child{padding-top:0}
+.type-meta{display:flex;flex-direction:column;gap:6px;min-width:0}
+.type-meta strong{font-size:17px}
+.type-meta span{color:var(--muted);font-size:14px;line-height:1.5}
+.type-meta a{font-size:13px;color:var(--muted)}
+.spec-display{font-size:clamp(40px,5.4vw,80px);line-height:1;margin:0;text-wrap:balance;min-width:0;overflow-wrap:anywhere}
+.spec-body{font-size:18px;line-height:1.65;max-width:62ch;margin:0}
+.spec-util{display:flex;flex-wrap:wrap;gap:10px 28px}
+
+.dir-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.dir{border:1px solid var(--line);border-radius:var(--radius-card);padding:24px;background:var(--surface);min-width:0;transition:background-color .5s}
+.dir h3{margin:10px 0 0;font-size:17px;font-weight:500;line-height:1.55}
+.fit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.fit .dir h3{font-size:16px}
+
+/* comparison */
+.compare-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.compare-head p{max-width:60ch;color:var(--muted);margin:0}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:28px}
+.card{display:flex;flex-direction:column;gap:14px;text-align:left;padding:20px;border-radius:var(--radius-card);border:1px solid var(--line);background:var(--c-bg);color:var(--c-ink);min-width:0;transition:transform .2s}
+.card:hover{transform:translateY(-3px)}
+.card[aria-current="true"]{outline:2px solid var(--accent);outline-offset:3px}
+.card .aa{font-size:64px;line-height:1}
+.card .nm{font-weight:600;font-size:16px}
+.card .rf{font-size:13px;line-height:1.5;opacity:.72}
+.strip{display:flex;height:22px;border-radius:4px;overflow:hidden}
+.strip i{flex:1}
+.card .go{margin-top:auto;font-size:13px;font-weight:600;color:var(--c-accent)}
+
+.foot{margin-top:72px;color:var(--muted);font-size:14px;max-width:70ch}
+
+/* dock */
+.dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:10;display:flex;gap:4px;padding:6px;border-radius:999px;background:rgba(16,16,19,.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);max-width:calc(100% - 32px);overflow-x:auto;scrollbar-width:none;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.dock::-webkit-scrollbar{display:none}
+.dock button{display:flex;align-items:center;gap:8px;padding:10px 15px;border-radius:999px;color:#E9E9EC;background:transparent;border:0;font:500 13px/1 system-ui,-apple-system,'Segoe UI',sans-serif;white-space:nowrap}
+.dock button:hover{background:rgba(255,255,255,.08)}
+.dock button[aria-pressed="true"]{background:#F2F2F4;color:#111114}
+.dock .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%);box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);transform:translate(-50%,8px);z-index:11;background:#F2F2F4;color:#111114;font:500 13px/1.3 system-ui,-apple-system,'Segoe UI',sans-serif;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1100px){
+  .cards{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);overflow-x:auto;padding-bottom:8px}
+  .palette{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .topnav,.preview-tag{display:none}
+  .hero{padding-block:110px 120px}
+  .sheet-head,.dir-grid,.fit{grid-template-columns:minmax(0,1fr)}
+  .type-row{grid-template-columns:minmax(0,1fr);gap:16px}
+  .step{min-height:80svh;align-items:flex-end;padding-bottom:90px}
+  .chip{height:96px}
+  .dock .nm{display:none}
+  .dock button{padding:10px 12px}
+}
+@media (max-aspect-ratio:11/10){.hero{background:linear-gradient(to top,var(--bg) 0%,color-mix(in srgb,var(--bg) 82%,transparent) 48%,transparent 70%)}}
+@media (max-width:420px){.palette{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <div class="wordmark disp" id="wordmark">Studio</div>
+  <nav class="topnav" aria-label="Preview navigation"><span>Work</span><span>Services</span><span>About</span></nav>
+  <div class="topright">
+    <span class="preview-tag" id="previewTag">Homepage preview</span>
+    <button class="btn small" type="button" data-demo>Book a call</button>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero" aria-label="Homepage preview">
+    <div class="hero-copy">
+      <div class="label" id="eyebrow">Websites · Booking · Automation · AI</div>
+      <h1 class="headline disp" id="headline">Built to perform.</h1>
+      <p class="sub" id="sub">Websites, booking portals and AI automation for UK service businesses.</p>
+      <div class="cta-row">
+        <button class="btn" type="button" data-demo>Book a free 20-minute call
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <a class="btn ghost" href="#sheet">See this theme's spec</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap story" aria-label="Scroll story">
+    <div class="step"><div class="step-card">
+      <div class="label">Step 1 of 3</div>
+      <h2 class="disp">Website</h2>
+      <p>A fast, clear site that explains what you do and turns visitors into enquiries.</p>
+      <div class="note" id="note0"></div>
+    </div></div>
+    <div class="step"><div class="step-card">
+      <div class="label">Step 2 of 3</div>
+      <h2 class="disp">Booking &amp; payments</h2>
+      <p>Online booking, calendar sync, reminders and Stripe deposits. Fewer no-shows and less phone tag.</p>
+      <div class="note" id="note1"></div>
+    </div></div>
+    <div class="step"><div class="step-card">
+      <div class="label">Step 3 of 3</div>
+      <h2 class="disp">Automation &amp; AI</h2>
+      <p>Enquiries flow into your CRM, follow-ups send themselves, and an assistant answers common questions around the clock.</p>
+      <div class="note" id="note2"></div>
+    </div></div>
+  </section>
+
+  <section class="sheet" id="sheet" aria-label="Theme specification">
+    <div class="sheet-inner" id="sheetInner"></div>
+  </section>
+</main>
+
+<nav class="dock" id="dock" aria-label="Choose a brand theme"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+window.THEMES = [
+{
+  id:'titanium', name:'Titanium Lab', short:'Titanium',
+  ref:'Anodised aerospace titanium, and the exploded-view drawings industrial designers use to show how a product fits together.',
+  mood:['Engineered','Precise','Quietly futurist'], pick:true,
+  colors:[
+    {name:'Gunmetal',hex:'#0D0F12',role:'Background'},
+    {name:'Anodised',hex:'#171A1F',role:'Surface, cards'},
+    {name:'Titanium white',hex:'#ECEEF1',role:'Primary text'},
+    {name:'Brushed',hex:'#8C93A0',role:'Secondary text'},
+    {name:'Heat-tint blue',hex:'#8E9BFF',role:'Accent, buttons'},
+    {name:'Heat-tint gold',hex:'#D7A86E',role:'Rare highlight'}],
+  tokens:{bg:'#0D0F12',surface:'#171A1F',ink:'#ECEEF1',muted:'#8C93A0',accent:'#8E9BFF',accentInk:'#0D0F12',line:'rgba(236,238,241,.14)',scheme:'dark'},
+  font:{display:"'Archivo', system-ui, sans-serif",weight:700,stretch:'125%',style:'normal',track:'-0.035em',h1:'clamp(38px,5.8vw,94px)',
+        body:"'Geist', system-ui, sans-serif",mono:"'Geist Mono', ui-monospace, monospace"},
+  type:[
+    {role:'Display',family:'Archivo Expanded',spec:'Archivo',detail:'700 weight, 125% width, −3.5% tracking. Headlines of three to four words.'},
+    {role:'Body',family:'Geist',spec:'Geist',detail:'400 for reading, 500 for buttons and navigation. 17–18px.'},
+    {role:'Utility',family:'Geist Mono',spec:'Geist+Mono',detail:'400, uppercase, +14% tracking. Labels, prices, step numbers.'}],
+  radius:'6px', radiusCard:'10px',
+  eyebrow:'Websites · Booking · Automation · AI',
+  h1:'Built to perform.',
+  sub:'Websites, booking portals and AI automation for UK service businesses.',
+  notes:['3D · the website plate lifts away from the block','3D · the booking-calendar plate separates','3D · the circuit and AI core light up'],
+  object:'Four machined titanium plates, each cut with one service: a browser window, a booking calendar, an automation circuit and an AI core.',
+  scroll:'The plates start as one solid block and open into an exploded view as the visitor scrolls, one plate per service.',
+  pointer:'The block tilts toward the cursor. Heat-tint colours drift across the metal as the light moves.',
+  material:'Iridescent anodised titanium, studio reflections, one periwinkle rim light and one gold fill.',
+  motion:'Mechanical and calm. 600–900ms eases, no bounce. Only the object moves; text stays still.',
+  bestFor:'Leading with technical credibility for automation and AI work. The exploded view explains the whole offer without words, which makes it the strongest Reel.',
+  watch:'Expanded headlines eat width. Keep headlines short and let body copy carry the detail.',
+  dot:['#8E9BFF','#0D0F12']
+},
+{
+  id:'jq', name:'Jewellery Quarter', short:'Jewellery Q.',
+  ref:"Birmingham's Jewellery Quarter: goldsmith benches, black velvet trays, hallmark stamps and freshly polished 18-carat gold.",
+  mood:['Crafted','Warm','Exclusive'],
+  colors:[
+    {name:'Velvet',hex:'#0E0C0B',role:'Background'},
+    {name:'Bench',hex:'#1B1714',role:'Surface, cards'},
+    {name:'Pearl',hex:'#F3EDE3',role:'Primary text'},
+    {name:'Patina',hex:'#A39887',role:'Secondary text'},
+    {name:'18ct gold',hex:'#D9B26F',role:'Accent, buttons'},
+    {name:'Garnet',hex:'#8C2F2B',role:'Fills only, never text'}],
+  tokens:{bg:'#0E0C0B',surface:'#1B1714',ink:'#F3EDE3',muted:'#A39887',accent:'#D9B26F',accentInk:'#0E0C0B',line:'rgba(243,237,227,.14)',scheme:'dark'},
+  font:{display:"'Bodoni Moda', 'Didot', Georgia, serif",weight:500,stretch:'100%',style:'italic',track:'-0.02em',h1:'clamp(50px,7.6vw,128px)',
+        body:"'Hanken Grotesk', system-ui, sans-serif",mono:"'Hanken Grotesk', system-ui, sans-serif"},
+  type:[
+    {role:'Display',family:'Bodoni Moda Italic',spec:'Bodoni+Moda',detail:'500 italic at a large optical size. Headlines and the wordmark only.'},
+    {role:'Body',family:'Hanken Grotesk',spec:'Hanken+Grotesk',detail:'400 for reading, 500 for interface. 17–18px, generous line height.'},
+    {role:'Utility',family:'Hanken Grotesk caps',spec:'Hanken+Grotesk',detail:'600, uppercase, +14% tracking. Read like a hallmark stamp.'}],
+  radius:'0px', radiusCard:'2px',
+  eyebrow:'Websites · Booking · AI automation',
+  h1:'Made by hand in Birmingham.',
+  sub:"Websites, booking systems and AI automation, finished to a jeweller's standard.",
+  notes:['3D · the molten gold starts to settle','3D · the band tightens around the form','3D · the surface polishes to a mirror'],
+  object:'A drop of molten gold with a polished band orbiting it, beads of gold and one cut garnet.',
+  scroll:'The molten surface calms into a perfect polished form as the visitor scrolls, like a piece being finished on the bench.',
+  pointer:'Reflections roll across the gold as the cursor moves.',
+  material:'High-polish gold, a warm key light and velvet-black surroundings.',
+  motion:'Liquid and unhurried. Long 900–1200ms eases, nothing snaps.',
+  bestFor:'Premium positioning and higher price points, with a local Birmingham story clients remember.',
+  watch:'Gold on black can read as jewellery or finance. Show real software demos early so visitors know it is a tech studio.',
+  dot:['#D9B26F','#0E0C0B']
+},
+{
+  id:'optical', name:'Optical', short:'Optical',
+  ref:"Precision optics labs and lens catalogues, with Yves Klein's International Klein Blue as the one strong colour.",
+  mood:['Clear','Bright','Scientific'],
+  colors:[
+    {name:'Lab grey',hex:'#ECEEF1',role:'Background'},
+    {name:'Lens white',hex:'#FFFFFF',role:'Surface, cards'},
+    {name:'Ink',hex:'#0F1115',role:'Primary text'},
+    {name:'Graphite',hex:'#5B616B',role:'Secondary text'},
+    {name:'Klein blue',hex:'#002FA7',role:'Accent, buttons'},
+    {name:'Frost',hex:'#C9CED6',role:'Lines, dividers'}],
+  tokens:{bg:'#ECEEF1',surface:'#FFFFFF',ink:'#0F1115',muted:'#5B616B',accent:'#002FA7',accentInk:'#FFFFFF',line:'rgba(15,17,21,.13)',scheme:'light'},
+  font:{display:"'Schibsted Grotesk', system-ui, sans-serif",weight:700,stretch:'100%',style:'normal',track:'-0.045em',h1:'clamp(46px,7vw,112px)',
+        body:"'Instrument Sans', system-ui, sans-serif",mono:"'JetBrains Mono', ui-monospace, monospace"},
+  type:[
+    {role:'Display',family:'Schibsted Grotesk',spec:'Schibsted+Grotesk',detail:'700, −4.5% tracking, tight 0.98 leading.'},
+    {role:'Body',family:'Instrument Sans',spec:'Instrument+Sans',detail:'400 for reading, 600 for buttons. 17–18px.'},
+    {role:'Utility',family:'JetBrains Mono',spec:'JetBrains+Mono',detail:'400, uppercase, +14% tracking. Spec-sheet labels and figures.'}],
+  radius:'999px', radiusCard:'18px',
+  eyebrow:'Websites · Booking · Automation · AI',
+  h1:'See your business clearly.',
+  sub:'Websites, booking portals and automation that turn enquiries into appointments.',
+  notes:['3D · the prism catches the first bars','3D · the lens drifts across and magnifies','3D · the prism turns side-on and splits the light'],
+  object:'A glass prism and a lens floating in front of moving Klein-blue bars. The glass bends the bars and splits their edges into fine rainbows.',
+  scroll:'The prism rotates and the bars slide, so the refraction changes at every scroll step.',
+  pointer:'The glass turns toward the cursor, changing what the visitor sees through it.',
+  material:'Clear dispersive glass, flat matte bars and soft lab lighting.',
+  motion:'Crisp and calm. 400–600ms eases; the glass moves slowly while the interface responds quickly.',
+  bestFor:'Clinics and professional services that want a clean, trustworthy look. The only light theme here with a strong 3D centrepiece.',
+  watch:'Glass refraction is the heaviest effect on phones. Ship a lighter mobile scene or a short video loop.',
+  dot:['#002FA7','#ECEEF1']
+},
+{
+  id:'stepwell', name:'Stepwell', short:'Stepwell',
+  ref:"Gujarat's stepwells, such as Rani ki Vav in Patan: carved terraces descending to water, lit at dusk. Brass from Jamnagar's foundries.",
+  mood:['Deep','Architectural','Rooted'],
+  colors:[
+    {name:'Monsoon indigo',hex:'#0F1226',role:'Background'},
+    {name:'Night well',hex:'#1A1E3B',role:'Surface, cards'},
+    {name:'Chalk',hex:'#F2EDE3',role:'Primary text'},
+    {name:'Haze',hex:'#9A9CB8',role:'Secondary text'},
+    {name:'Brass',hex:'#D3A43F',role:'Accent, buttons'},
+    {name:'Sandstone',hex:'#C2724E',role:'Second accent, fills'}],
+  tokens:{bg:'#0F1226',surface:'#1A1E3B',ink:'#F2EDE3',muted:'#9A9CB8',accent:'#D3A43F',accentInk:'#0F1226',line:'rgba(242,237,227,.14)',scheme:'dark'},
+  font:{display:"'Syne', system-ui, sans-serif",weight:700,stretch:'100%',style:'normal',track:'-0.03em',h1:'clamp(44px,6.8vw,110px)',
+        body:"'Figtree', system-ui, sans-serif",mono:"'Figtree', system-ui, sans-serif"},
+  type:[
+    {role:'Display',family:'Syne',spec:'Syne',detail:'700, −3% tracking. Its wide, carved letterforms suit the architecture.'},
+    {role:'Body',family:'Figtree',spec:'Figtree',detail:'400 for reading, 500 for interface. 17–18px.'},
+    {role:'Utility',family:'Figtree caps',spec:'Figtree',detail:'600, uppercase, +14% tracking. Level markers and labels.'}],
+  radius:'0px', radiusCard:'4px',
+  eyebrow:'Websites · Booking · Automation · AI',
+  h1:'Go deeper than a website.',
+  sub:'Booking systems, automation and AI agents built into the foundations of your business.',
+  notes:['3D · the camera starts at the rim','3D · descending past the brass terraces','3D · arriving at the water and the lamp'],
+  object:'A square stepwell of alternating brass and sandstone terraces, with dark water and a single lamp at the bottom.',
+  scroll:'The camera descends through the terraces toward the water, one level per scroll step. It plays as one continuous flythrough.',
+  pointer:'The well turns slightly with the cursor and light catches the brass edges.',
+  material:'Brushed brass, matte sandstone, indigo dusk fog and one warm lamp.',
+  motion:'Cinematic. A single continuous camera move tied to scroll; nothing else animates.',
+  bestFor:'The most original direction and the best camera flythrough for Reels and YouTube. Connects the UK studio to its Indian roots and exporter clients.',
+  watch:'The architecture is the hero. Keep the interface flat and quiet so it does not compete.',
+  dot:['#D3A43F','#0F1226']
+},
+{
+  id:'jasper', name:'Jasper', short:'Jasper',
+  ref:'Wedgwood jasperware from Stoke-on-Trent: matte unglazed porcelain in soft blue with white relief, and a deep cobalt glaze.',
+  mood:['Calm','Caring','Trustworthy'],
+  colors:[
+    {name:'Jasper blue',hex:'#D9E3EC',role:'Background'},
+    {name:'Porcelain',hex:'#F5F7F9',role:'Surface, cards'},
+    {name:'Portland navy',hex:'#15233F',role:'Primary text'},
+    {name:'Slate glaze',hex:'#4E5E77',role:'Secondary text'},
+    {name:'Cobalt glaze',hex:'#1F3B8C',role:'Accent, buttons'},
+    {name:'Pale relief',hex:'#A9BED3',role:'Lines, fills'}],
+  tokens:{bg:'#D9E3EC',surface:'#F5F7F9',ink:'#15233F',muted:'#4E5E77',accent:'#1F3B8C',accentInk:'#FFFFFF',line:'rgba(21,35,63,.14)',scheme:'light'},
+  font:{display:"'Fraunces', Georgia, serif",weight:400,stretch:'100%',style:'normal',track:'-0.025em',h1:'clamp(44px,6.4vw,104px)',
+        body:"'Outfit', system-ui, sans-serif",mono:"'Outfit', system-ui, sans-serif"},
+  type:[
+    {role:'Display',family:'Fraunces',spec:'Fraunces',detail:'400 at the largest optical size, −2.5% tracking. Italic for one emphasised word at most.'},
+    {role:'Body',family:'Outfit',spec:'Outfit',detail:'400 for reading, 500 for interface. 17–18px, relaxed leading.'},
+    {role:'Utility',family:'Outfit caps',spec:'Outfit',detail:'500, uppercase, +14% tracking. Labels and small headings.'}],
+  radius:'999px', radiusCard:'22px',
+  eyebrow:'For care agencies and clinics',
+  h1:'Calm systems for busy care teams.',
+  sub:'Websites, online booking and admin automation for clinics and care agencies.',
+  notes:['3D · the stack sits in balance','3D · the stones begin to lift','3D · everything floats; nothing is heavy'],
+  object:'A balanced stack of porcelain pebbles with a white relief band and one cobalt-glazed stone.',
+  scroll:'The stones lift and separate, then hover in balance, the way admin is lifted off the client.',
+  pointer:'The stack leans gently toward the cursor while soft shadows move on the ground.',
+  material:'Matte porcelain, satin cobalt glaze, soft daylight and contact shadows.',
+  motion:'Soft and slow. 700–1000ms eases and gentle floating; never fast.',
+  bestFor:'The care agencies and clinics the business plan targets first. Reassuring for non-technical owners and still clearly 3D.',
+  watch:'Calm can drift into plain. Keep the 3D large and the type sharp so it still reads as premium.',
+  dot:['#1F3B8C','#D9E3EC']
+}];
+
+(function(){
+  const T = window.THEMES, root = document.documentElement, $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const rgb = h => [1,3,5].map(i => parseInt(h.slice(i,i+2),16)/255);
+  const lum = h => rgb(h).map(c => c <= .03928 ? c/12.92 : Math.pow((c+.055)/1.055, 2.4)).reduce((a,c,i) => a + c*[.2126,.7152,.0722][i], 0);
+  const ratio = (a,b) => { const x = lum(a), y = lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); };
+  const grade = r => r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA large' : 'decor only';
+
+  let toastTimer;
+  function toast(msg){ const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200); }
+
+  // dock
+  $('#dock').innerHTML = T.map((t,i) => `<button type="button" data-i="${i}" aria-pressed="false" title="${esc(t.name)} (key ${i+1})"><span class="dot" style="--a:${t.dot[0]};--b:${t.dot[1]}"></span><span class="nm">${esc(t.short)}</span></button>`).join('');
+  $('#dock').addEventListener('click', e => { const b = e.target.closest('button'); if (b) apply(+b.dataset.i); });
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input,textarea')) return;
+    const n = parseInt(e.key, 10); if (n >= 1 && n <= T.length) apply(n-1);
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-demo]')) toast('Preview only. On the live site this opens the booking calendar.');
+    const sw = e.target.closest('[data-hex]');
+    if (sw) {
+      const hex = sw.dataset.hex;
+      const done = () => toast('Copied ' + hex);
+      try { navigator.clipboard.writeText(hex).then(done, () => toast(hex + ' (copy blocked, select it from the swatch)')); }
+      catch (_) { toast(hex); }
+    }
+    const card = e.target.closest('[data-card]');
+    if (card) { apply(+card.dataset.card); window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
+  });
+
+  function sheetHTML(t, i){
+    const b = t.tokens.bg;
+    const pal = t.colors.map(c => {
+      const r = c.hex.toUpperCase() === b.toUpperCase() ? null : ratio(c.hex, b);
+      return `<button type="button" class="swatch" data-hex="${c.hex}" aria-label="Copy ${esc(c.name)} ${c.hex}">
+        <span class="chip" style="background:${c.hex}"></span>
+        <span class="sw-name">${esc(c.name)}</span>
+        <span class="sw-role">${esc(c.role)}</span>
+        <span class="sw-hex">${c.hex}</span>
+        <span class="sw-ratio">${r ? 'on background ' + r.toFixed(1) + ':1 · ' + grade(r) : 'base colour'}</span></button>`;
+    }).join('');
+    const btnR = ratio(t.tokens.accent, t.tokens.accentInk);
+    const ty = t.type;
+    return `
+    <div class="sheet-head">
+      <div>
+        <div class="label">Theme ${i+1} of ${T.length}</div>
+        <h2 class="theme-name disp">${esc(t.name)}</h2>
+      </div>
+      <div>
+        <p class="ref"><strong style="color:var(--ink);font-weight:600">Reference.</strong> ${esc(t.ref)}</p>
+        <div class="tags">${t.pick ? '<span class="pick">My pick</span>' : ''}${t.mood.map(m => `<span>${esc(m)}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="sec"><span class="label">Colour</span><span class="label">Click a swatch to copy · button label ${btnR.toFixed(1)}:1 ${grade(btnR)}</span></div>
+    <div class="palette">${pal}</div>
+
+    <div class="sec"><span class="label">Typography</span><span class="label">All free on Google Fonts</span></div>
+    <div>
+      <div class="type-row">
+        <div class="type-meta"><span class="label">${ty[0].role}</span><strong>${esc(ty[0].family)}</strong><span>${esc(ty[0].detail)}</span><a href="https://fonts.google.com/specimen/${ty[0].spec}" target="_blank" rel="noopener">View on Google Fonts ↗</a></div>
+        <p class="spec-display disp">${esc(t.h1)}</p>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="label">${ty[1].role}</span><strong>${esc(ty[1].family)}</strong><span>${esc(ty[1].detail)}</span><a href="https://fonts.google.com/specimen/${ty[1].spec}" target="_blank" rel="noopener">View on Google Fonts ↗</a></div>
+        <p class="spec-body">We build websites, booking portals and automations for businesses that run on appointments. Every project comes with a care plan for hosting, backups and small changes, so your site keeps working after launch.</p>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="label">${ty[2].role}</span><strong>${esc(ty[2].family)}</strong><span>${esc(ty[2].detail)}</span><a href="https://fonts.google.com/specimen/${ty[2].spec}" target="_blank" rel="noopener">View on Google Fonts ↗</a></div>
+        <div class="spec-util label" style="color:var(--ink)"><span>Starter website · from £450</span><span>Booking portal · 3–6 weeks</span><span>Care plan · £30/month</span></div>
+      </div>
+    </div>
+
+    <div class="sec"><span class="label">3D direction</span><span class="label">What the hero above is doing</span></div>
+    <div class="dir-grid">
+      <div class="dir"><div class="label">Object</div><h3>${esc(t.object)}</h3></div>
+      <div class="dir"><div class="label">Scroll story</div><h3>${esc(t.scroll)}</h3></div>
+      <div class="dir"><div class="label">Cursor</div><h3>${esc(t.pointer)}</h3></div>
+      <div class="dir"><div class="label">Material and light</div><h3>${esc(t.material)}</h3></div>
+    </div>
+    <div class="fit">
+      <div class="dir"><div class="label">Motion</div><h3>${esc(t.motion)}</h3></div>
+      <div class="dir"><div class="label">Best for</div><h3>${esc(t.bestFor)}</h3></div>
+    </div>
+    <div class="fit">
+      <div class="dir"><div class="label">Watch for</div><h3>${esc(t.watch)}</h3></div>
+      <div class="dir"><div class="label">Shape</div><h3>Buttons ${t.radius === '999px' ? 'fully rounded' : t.radius === '0px' ? 'square-cornered' : t.radius + ' radius'}, cards ${t.radiusCard} radius. Headline ${esc(t.font.h1.replace('clamp(','').replace(')','').split(',').filter((_,k)=>k!==1).join(' to '))}.</h3></div>
+    </div>
+
+    <div class="sec" id="compare"><span class="label">Compare all five</span><span class="label">Keys 1–5 switch themes</span></div>
+    <div class="compare-head">
+      <p>My pick is <strong style="color:var(--ink)">Titanium Lab</strong>: its exploded view shows websites, booking, automation and AI in one object, which suits a tech studio and films well. Choose <strong style="color:var(--ink)">Stepwell</strong> for the most original reel, or <strong style="color:var(--ink)">Jasper</strong> if most sales will be to care agencies and clinics.</p>
+    </div>
+    <div class="cards">${T.map((c,k) => `
+      <button type="button" class="card" data-card="${k}" aria-current="${k===i}" style="--c-bg:${c.tokens.bg};--c-ink:${c.tokens.ink};--c-accent:${c.tokens.accent}">
+        <span class="aa" style="font-family:${esc(c.font.display)};font-weight:${c.font.weight};font-style:${c.font.style};font-stretch:${c.font.stretch};letter-spacing:${c.font.track}">Aa</span>
+        <span class="nm">${k+1}. ${esc(c.name)}</span>
+        <span class="strip">${c.colors.map(x => `<i style="background:${x.hex}"></i>`).join('')}</span>
+        <span class="rf">${esc(c.type[0].family)} + ${esc(c.type[1].family)}</span>
+        <span class="go">${k===i ? 'Showing now' : 'Preview this theme ↑'}</span>
+      </button>`).join('')}
+    </div>
+    <p class="foot">“Studio” is a placeholder wordmark until the business name is chosen. Each theme is built so it still works without the 3D: on slow phones, show a still render or a short video loop of the same scene. Contrast ratios are calculated live against each theme's background.</p>`;
+  }
+
+  let current = -1;
+  function apply(i){
+    if (i === current) return;
+    current = i;
+    const t = T[i], s = root.style, k = t.tokens, f = t.font;
+    s.setProperty('--bg', k.bg); s.setProperty('--surface', k.surface); s.setProperty('--ink', k.ink);
+    s.setProperty('--muted', k.muted); s.setProperty('--accent', k.accent); s.setProperty('--accent-ink', k.accentInk); s.setProperty('--line', k.line);
+    s.setProperty('--display', f.display); s.setProperty('--display-weight', f.weight); s.setProperty('--display-stretch', f.stretch);
+    s.setProperty('--display-style', f.style); s.setProperty('--display-track', f.track); s.setProperty('--h1-size', f.h1);
+    s.setProperty('--body', f.body); s.setProperty('--mono', f.mono);
+    s.setProperty('--radius', t.radius); s.setProperty('--radius-card', t.radiusCard);
+    s.colorScheme = k.scheme;
+    $('#eyebrow').textContent = t.eyebrow; $('#headline').textContent = t.h1; $('#sub').textContent = t.sub;
+    t.notes.forEach((n,j) => $('#note'+j).textContent = n);
+    $('#previewTag').textContent = 'Theme ' + (i+1) + ' · ' + t.name;
+    $('#sheetInner').innerHTML = sheetHTML(t, i);
+    document.querySelectorAll('#dock button').forEach((b,j) => b.setAttribute('aria-pressed', j === i));
+    try { history.replaceState(null, '', '#' + t.id); } catch (_) {}
+    window.__theme = t.id;
+    window.dispatchEvent(new CustomEvent('themechange', {detail: t.id}));
+  }
+  addEventListener('hashchange', () => { const k = T.findIndex(t => '#' + t.id === location.hash); if (k >= 0) apply(k); });
+  const fromHash = T.findIndex(t => '#' + t.id === location.hash);
+  apply(fromHash >= 0 ? fromHash : 0);
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const canvas = document.getElementById('stage');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+} catch (e) { document.documentElement.classList.add('no-webgl'); throw e; }
+
+const small = () => innerWidth < 760;
+renderer.setPixelRatio(Math.min(devicePixelRatio, small() ? 1.5 : 1.75));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.05, 100);
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const smooth = (a, b, x) => { x = clamp01((x - a) / (b - a)); return x * x * (3 - 2 * x); };
+const lerp = (a, b, t) => a + (b - a) * t;
+const TAU = Math.PI * 2;
+
+function rig() {
+  const holder = new THREE.Group(), pivot = new THREE.Group(), obj = new THREE.Group();
+  holder.add(pivot); pivot.add(obj);
+  return { holder, pivot, obj };
+}
+function rr(w, h, r, cx = 0, cy = 0, P = THREE.Shape) {
+  const s = new P(), x = cx - w / 2, y = cy - h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+  return s;
+}
+const hole = (w, h, r, cx, cy) => rr(w, h, r, cx, cy, THREE.Path);
+const circ = (x, y, r) => { const p = new THREE.Path(); p.absarc(x, y, r, 0, TAU, false); return p; };
+
+/* ---------- 1. Titanium Lab: exploded machined plates ---------- */
+function titanium() {
+  const R = rig(), W = 2.6, H = 1.7;
+  const plateGeo = holes => {
+    const s = rr(W, H, .16); s.holes.push(...holes);
+    const g = new THREE.ExtrudeGeometry(s, { depth: .07, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3, curveSegments: 18 });
+    g.center(); return g;
+  };
+  const web = [hole(2.24, 1.0, .07, 0, -.17), circ(-.98, .56, .045), circ(-.84, .56, .045), circ(-.70, .56, .045), hole(.9, .09, .045, .45, .56)];
+  const cal = [hole(.8, .1, .05, -.58, .6)];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 7; c++) cal.push(hole(.22, .22, .04, -.87 + c * .29, .315 - r * .29));
+  const nodes = [[-.7, -.5, .1], [-.85, .3, .16], [.15, .5, .09], [-.15, -.3, .2], [.7, .32, .16], [.95, -.45, .1]];
+  const auto = nodes.map(([x, y, r]) => circ(x, y, r));
+  const ai = [circ(.45, 0, .55), hole(.7, .07, .035, -.75, .3), hole(.55, .07, .035, -.825, .12), hole(.62, .07, .035, -.79, -.06), hole(.36, .14, .07, -.92, -.32)];
+
+  const tints = [[200, 340], [360, 480], [500, 640], [660, 840]];
+  const mats = tints.map(([a, b]) => new THREE.MeshPhysicalMaterial({
+    color: 0xc3c7ce, metalness: 1, roughness: .26, iridescence: .55, iridescenceIOR: 1.5,
+    iridescenceThicknessRange: [a, b], clearcoat: .5, clearcoatRoughness: .25 }));
+  const plates = [web, cal, auto, ai].map((h, i) => { const m = new THREE.Mesh(plateGeo(h), mats[i]); R.obj.add(m); return m; });
+
+  const glow = new THREE.MeshStandardMaterial({ color: 0x0d0f12, emissive: 0x8e9bff, emissiveIntensity: 1 });
+  const booked = new THREE.Mesh(new THREE.BoxGeometry(.18, .18, .05), glow.clone());
+  booked.position.set(-.87 + 3 * .29, .315 - 2 * .29, 0); plates[1].add(booked);
+  const curve = new THREE.CatmullRomCurve3(nodes.map(([x, y]) => new THREE.Vector3(x, y, .075)), false, 'centripetal');
+  const trace = new THREE.Mesh(new THREE.TubeGeometry(curve, 200, .014, 8, false), glow.clone()); plates[2].add(trace);
+  const core = new THREE.Mesh(new THREE.SphereGeometry(.3, 48, 32), new THREE.MeshStandardMaterial({ color: 0x1a1d40, emissive: 0x8e9bff, emissiveIntensity: 2, roughness: .3 }));
+  core.position.set(.45, 0, 0); plates[3].add(core);
+
+  const key = new THREE.DirectionalLight(0xffffff, 2); key.position.set(4, 5, 6); R.holder.add(key);
+  const rim = new THREE.PointLight(0x8e9bff, 45); rim.position.set(-3, 1.5, -2); R.holder.add(rim);
+  const fill = new THREE.PointLight(0xd7a86e, 22); fill.position.set(3, -2, 2.5); R.holder.add(fill);
+
+  return {
+    ...R, exposure: 1,
+    cam: () => ({ p: [0, .2, 8.4], l: [0, 0, 0] }),
+    update(t, p) {
+      const e = smooth(.02, .78, p), sp = .11 + e * .8;
+      plates.forEach((m, i) => m.position.set((i - 1.5) * e * .2, (i - 1.5) * e * .1, -(i - 1.5) * sp));
+      R.obj.rotation.set(.18 + Math.sin(t * .2) * .03, -.55 - e * .4 + Math.sin(t * .25) * .07, 0);
+      R.obj.position.y = Math.sin(t * .6) * .04;
+      mats.forEach((m, i) => { const s = Math.sin(t * .35 + i * 1.3) * 60 + p * 140; m.iridescenceThicknessRange = [tints[i][0] + s, tints[i][1] + s]; });
+      booked.material.emissiveIntensity = .3 + smooth(.25, .55, p) * 2.4;
+      trace.material.emissiveIntensity = .3 + smooth(.5, .85, p) * 2.6;
+      core.material.emissiveIntensity = 1.4 + Math.sin(t * 2) * .35 + smooth(.6, 1, p) * 2;
+    }
+  };
+}
+
+/* ---------- 2. Jewellery Quarter: molten gold settling ---------- */
+function jq() {
+  const R = rig(), seg = small() ? 96 : 150;
+  let g = new THREE.SphereGeometry(1.05, seg, Math.round(seg * .75));
+  g.deleteAttribute('uv'); g.deleteAttribute('normal'); g = mergeVertices(g); g.computeVertexNormals();
+  const pos = g.attributes.position, base = pos.array.slice(), arr = pos.array;
+  const gold = new THREE.MeshPhysicalMaterial({ color: '#F2C77E', metalness: 1, roughness: .13, clearcoat: .6, clearcoatRoughness: .08, envMapIntensity: .95 });
+  const blob = new THREE.Mesh(g, gold); R.obj.add(blob);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.7, .045, 32, 240), gold); R.obj.add(ring);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.98, .012, 16, 240), gold); R.obj.add(ring2);
+  const beads = [0, 1, 2, 3, 4].map(i => { const b = new THREE.Mesh(new THREE.SphereGeometry(.05 + (i % 2) * .025, 24, 16), gold); R.obj.add(b); return b; });
+  const garnet = new THREE.Mesh(new THREE.OctahedronGeometry(.17, 0), new THREE.MeshPhysicalMaterial({
+    color: '#c0392b', transmission: 1, thickness: .5, ior: 1.76, roughness: 0, attenuationColor: '#5a0f0c', attenuationDistance: .4, specularIntensity: 1 }));
+  R.obj.add(garnet);
+
+  const key = new THREE.SpotLight(0xffe2b0, 90, 0, .6, .6); key.position.set(3, 5, 4); R.holder.add(key); R.holder.add(key.target);
+  const back = new THREE.PointLight(0xffc98a, 18); back.position.set(-3, -1, -2.5); R.holder.add(back);
+
+  return {
+    ...R, exposure: .95,
+    cam: () => ({ p: [0, .3, 8.2], l: [0, 0, 0] }),
+    update(t, p) {
+      const e = smooth(0, .95, p), amp = lerp(.2, .016, e);
+      for (let i = 0; i < arr.length; i += 3) {
+        const x = base[i], y = base[i + 1], z = base[i + 2];
+        const n = Math.sin(x * 1.9 + t * .8) * Math.sin(y * 2.3 + t * .65) * Math.sin(z * 2.1 + t * .5)
+                + .45 * Math.sin(x * 3.7 - t * 1.1 + y * 2.2) * Math.sin(z * 3.3 + t * .9);
+        const f = 1 + amp * n;
+        arr[i] = x * f; arr[i + 1] = y * f; arr[i + 2] = z * f;
+      }
+      pos.needsUpdate = true; g.computeVertexNormals();
+      blob.rotation.y = t * .12;
+      ring.rotation.set(lerp(1.1, 1.42, e) + Math.sin(t * .3) * .05, t * .15, lerp(.4, .12, e));
+      ring.scale.setScalar(lerp(1, .84, e));
+      ring2.rotation.set(1.3 + Math.cos(t * .25) * .08, -t * .1, -.35);
+      ring2.scale.setScalar(lerp(1, .9, e));
+      beads.forEach((b, i) => { const a = t * (.25 + i * .04) + i * TAU / 5; const r = 2.25 + (i % 2) * .2; b.position.set(Math.cos(a) * r, Math.sin(a * 1.3 + i) * .35, Math.sin(a) * r * .55); });
+      const ga = t * .3 + 2;
+      garnet.position.set(Math.cos(ga) * 1.95, .65 + Math.sin(t * .7) * .1, Math.sin(ga) * 1.1);
+      garnet.rotation.set(t * .4, t * .6, 0);
+      R.obj.position.y = Math.sin(t * .5) * .05;
+    }
+  };
+}
+
+/* ---------- 3. Optical: dispersive glass over Klein-blue bars ---------- */
+function optical() {
+  const R = rig();
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 1, thickness: 1.4, ior: 1.52, dispersion: 6, roughness: .02, metalness: 0, specularIntensity: 1, envMapIntensity: 1.1 });
+  let pg = new THREE.CylinderGeometry(1, 1, 2.7, 3, 1).toNonIndexed(); pg.computeVertexNormals();
+  const prism = new THREE.Mesh(pg, glass); R.obj.add(prism);
+  const lens = new THREE.Mesh(new THREE.SphereGeometry(.52, 64, 48), glass); R.obj.add(lens);
+
+  const bars = new THREE.Group(); bars.position.z = -2.4; R.holder.add(bars);
+  const blue = new THREE.MeshBasicMaterial({ color: '#002FA7', toneMapped: false });
+  const ink = new THREE.MeshBasicMaterial({ color: '#0F1115', toneMapped: false });
+  const box = new THREE.BoxGeometry(1, 1, 1), count = 12, spacing = .42, span = count * spacing;
+  for (let i = 0; i < count; i++) {
+    const m = new THREE.Mesh(box, i % 3 === 2 ? ink : blue);
+    m.userData.w = i % 3 === 2 ? .045 : (i % 2 ? .2 : .1);
+    m.scale.set(m.userData.w, 4.6, .02);
+    m.userData.x0 = (i - count / 2) * spacing; bars.add(m);
+  }
+  const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 4, 5); R.holder.add(key);
+
+  return {
+    ...R, exposure: 1,
+    cam: () => ({ p: [0, 0, 7.4], l: [0, 0, 0] }),
+    update(t, p) {
+      const e = smooth(0, 1, p), off = t * .18 + p * 1.6;
+      bars.children.forEach(m => {
+        let x = m.userData.x0 + off; x = ((x + span / 2) % span + span) % span - span / 2;
+        m.position.x = x; m.scale.x = Math.max(.001, m.userData.w * (1 - smooth(span / 2 - .7, span / 2, Math.abs(x))));
+      });
+      prism.rotation.set(.15, t * .12 + p * 1.3, lerp(.25, 1.42, e));
+      const a = t * .3 + p * 2.4;
+      lens.position.set(Math.cos(a) * 1.6, Math.sin(a) * .55 - .2, .9);
+    }
+  };
+}
+
+/* ---------- 4. Stepwell: brass and sandstone terraces ---------- */
+function stepwell() {
+  const R = rig(), N = small() ? 11 : 13, STEP = .25, RISE = .24, TOP = 3.6;
+  const brass = new THREE.MeshStandardMaterial({ color: '#D3A43F', metalness: .9, roughness: .3, envMapIntensity: .3 });
+  const sand = new THREE.MeshStandardMaterial({ color: '#B4664A', metalness: 0, roughness: .9, envMapIntensity: .12 });
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  const add = (m, p, s) => { const b = new THREE.Mesh(box, m); b.position.set(...p); b.scale.set(...s); R.obj.add(b); };
+  const cols = [];
+  for (let i = 0; i < N; i++) {
+    const s = TOP - i * STEP * 2, y = -i * RISE, fw = STEP, m = i % 2 ? sand : brass, o = s / 2 - fw / 2;
+    add(m, [0, y, -o], [s, RISE, fw]); add(m, [0, y, o], [s, RISE, fw]);
+    add(m, [-o, y, 0], [fw, RISE, s - 2 * fw]); add(m, [o, y, 0], [fw, RISE, s - 2 * fw]);
+    if (i % 3 === 1) for (let k = 0; k < 4; k++) for (let j = 0; j < 4; j++) {
+      const along = -o + (j + .5) * (2 * o / 4), side = [[along, -o], [along, o], [-o, along], [o, along]][k];
+      cols.push([side[0], y + RISE / 2 + .2, side[1]]);
+    }
+  }
+  const rimS = TOP + 2.4, ro = rimS / 2 - .6;
+  const rimMat = new THREE.MeshStandardMaterial({ color: '#2b2238', roughness: .95, envMapIntensity: .05 });
+  add(rimMat, [0, .02, -ro], [rimS, .2, 1.2]); add(rimMat, [0, .02, ro], [rimS, .2, 1.2]);
+  add(rimMat, [-ro, .02, 0], [1.2, .2, rimS - 2.4]); add(rimMat, [ro, .02, 0], [1.2, .2, rimS - 2.4]);
+  const colMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(.06, .4, .06), sand, cols.length);
+  const mtx = new THREE.Matrix4(); cols.forEach((c, i) => colMesh.setMatrixAt(i, mtx.makeTranslation(...c))); R.obj.add(colMesh);
+  const wy = -N * RISE + RISE / 2 + .01, ws = TOP - N * STEP * 2;
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(ws, ws), new THREE.MeshStandardMaterial({ color: '#141834', metalness: 1, roughness: .06 }));
+  water.rotation.x = -Math.PI / 2; water.position.y = wy; R.obj.add(water);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(.07, 24, 16), new THREE.MeshStandardMaterial({ color: '#000', emissive: '#FFC46B', emissiveIntensity: 4 }));
+  lamp.position.y = wy + .3; R.obj.add(lamp);
+  const lampLight = new THREE.PointLight(0xffc46b, 26, 0, 1.6); lampLight.position.copy(lamp.position); R.obj.add(lampLight);
+  R.holder.add(new THREE.HemisphereLight(0x8a8fd6, 0x0f1226, .35));
+  const moon = new THREE.DirectionalLight(0xd5d8ff, .45); moon.position.set(-6, 4.5, 2); R.holder.add(moon);
+
+  return {
+    ...R, offFrac: .15, oyFrac: .1, exposure: .95, fog: [7, 15], offsetFade: true, tilt: .35,
+    cam(p) {
+      const e = smooth(0, 1, p);
+      return { p: [0, lerp(6.6, -.8, e), lerp(8.4, .25, e)], l: [0, lerp(-1.3, wy, e), lerp(0, -.6, e)] };
+    },
+    update(t, p) {
+      R.obj.rotation.y = .5 + t * .03 + p * .9;
+      lampLight.intensity = 26 + Math.sin(t * 3) * 1.5 + Math.sin(t * 7.3) * 1 + smooth(.6, 1, p) * 10;
+      lamp.position.y = wy + .3 + Math.sin(t * 1.2) * .03;
+    }
+  };
+}
+
+/* ---------- 5. Jasper: porcelain pebbles in balance ---------- */
+function jasper() {
+  const R = rig();
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: .16, color: '#15233F' }));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -1.3; ground.receiveShadow = true; R.holder.add(ground);
+  const porcelain = new THREE.MeshPhysicalMaterial({ color: '#F5F7F9', roughness: .55, clearcoat: .35, clearcoatRoughness: .4, sheen: .4, sheenColor: '#d9e3ec' });
+  const cobalt = new THREE.MeshPhysicalMaterial({ color: '#1F3B8C', roughness: .2, clearcoat: 1, clearcoatRoughness: .05 });
+  const relief = new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', roughness: .7 });
+  const sg = new THREE.SphereGeometry(1, small() ? 64 : 96, small() ? 48 : 64);
+  const specs = [[1.15, .44, .95, porcelain], [.86, .36, .74, cobalt], [.64, .31, .56, porcelain], [.42, .26, .38, porcelain]];
+  let y = -1.3;
+  const pebbles = specs.map(([a, b, c, m], i) => {
+    y += b * (i ? .9 : 1);
+    const mesh = new THREE.Mesh(sg, m); mesh.scale.set(a, b, c); mesh.castShadow = true; mesh.receiveShadow = true;
+    mesh.userData.y = y; y += b; R.obj.add(mesh);
+    if (m === porcelain && i < 3) {
+      const band = new THREE.Mesh(new THREE.TorusGeometry(1, .035, 16, 160), relief); band.rotation.x = Math.PI / 2; mesh.add(band);
+      if (i === 0) for (let k = 0; k < 16; k++) {
+        const ang = k / 16 * TAU, dot = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), relief);
+        dot.position.set(Math.cos(ang) * .935, .35, Math.sin(ang) * .935); dot.scale.set(.03 / a, .03 / b, .03 / c); mesh.add(dot);
+      }
+    }
+    return mesh;
+  });
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(.17, 48, 32), porcelain); orb.castShadow = true; R.obj.add(orb);
+
+  R.holder.add(new THREE.HemisphereLight(0xffffff, 0x9fb3c8, 1.3));
+  const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(3, 6, 4); sun.castShadow = true;
+  sun.shadow.mapSize.set(small() ? 1024 : 2048, small() ? 1024 : 2048);
+  Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: .5, far: 20 });
+  sun.shadow.bias = -.0005; sun.shadow.normalBias = .02; R.holder.add(sun);
+
+  return {
+    ...R, exposure: 1,
+    cam: () => ({ p: [0, .9, 8.2], l: [0, .1, 0] }),
+    update(t, p) {
+      const gap = smooth(.05, .85, p) * .34;
+      pebbles.forEach((m, i) => {
+        m.position.y = m.userData.y + i * gap + (i ? Math.sin(t * .7 + i * .9) * .018 : 0);
+        m.rotation.y = (i % 2 ? -1 : 1) * (t * .04 + p * .5);
+        m.rotation.z = i ? Math.sin(t * .4 + i) * .02 + p * .07 * (i % 2 ? 1 : -1) : 0;
+      });
+      orb.position.set(1.45, .5 + Math.sin(t * .8) * .08 + p * .5, .3);
+      R.obj.rotation.y = -.3;
+    }
+  };
+}
+
+const BUILD = { titanium, jq, optical, stepwell, jasper };
+let cur = null, curId = null, swapTimer;
+
+function dispose(o) {
+  o.traverse(n => {
+    if (n.geometry) n.geometry.dispose();
+    if (n.material) [].concat(n.material).forEach(m => m.dispose());
+    if (n.shadow && n.shadow.map) n.shadow.map.dispose();
+  });
+}
+function setTheme(id) {
+  if (id === curId) return;
+  curId = id;
+  const swap = () => {
+    if (cur) { scene.remove(cur.holder); dispose(cur.holder); }
+    const th = window.THEMES.find(t => t.id === id);
+    scene.background = new THREE.Color(th.tokens.bg);
+    cur = BUILD[id]();
+    scene.fog = cur.fog ? new THREE.Fog(th.tokens.bg, cur.fog[0], cur.fog[1]) : null;
+    renderer.toneMappingExposure = cur.exposure || 1;
+    scene.add(cur.holder);
+    layout();
+    canvas.classList.remove('fading');
+  };
+  clearTimeout(swapTimer);
+  if (cur) { canvas.classList.add('fading'); swapTimer = setTimeout(swap, 280); } else swap();
+}
+
+function layout() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+}
+addEventListener('resize', layout);
+
+const ptr = { x: 0, y: 0 }, ps = { x: 0, y: 0 };
+addEventListener('pointermove', e => { ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+
+const sheet = document.getElementById('sheet');
+const v = new THREE.Vector3(), l = new THREE.Vector3();
+let t = 0, last = performance.now(), sp = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!cur || sheet.getBoundingClientRect().top <= 0) return;
+  if (!reduce.matches) t += dt;
+  const end = Math.max(1, sheet.offsetTop - innerHeight);
+  const p = clamp01(scrollY / end);
+  sp += (p - sp) * Math.min(1, dt * 5);
+  ps.x += (ptr.x - ps.x) * Math.min(1, dt * 3); ps.y += (ptr.y - ps.y) * Math.min(1, dt * 3);
+  const tilt = cur.tilt ?? 1;
+  cur.pivot.rotation.y = ps.x * .35 * tilt; cur.pivot.rotation.x = ps.y * .2 * tilt;
+  const fade = cur.offsetFade ? 1 - smooth(0, .7, sp) : 1;
+  cur.update(t, sp, dt);
+  const c = cur.cam(sp, t);
+  l.set(...c.l); v.set(...c.p);
+  if (camera.aspect < 1) v.sub(l).multiplyScalar(1 + (1 - camera.aspect) * 1.15 * fade).add(l);
+  camera.position.copy(v); camera.lookAt(l);
+  // shift the object in screen space: right of the copy on wide screens, above it on tall ones
+  const w = innerWidth, h = innerHeight, wide = camera.aspect >= 1.1;
+  const ox = wide ? -(cur.offFrac ?? .19) * w * Math.min(1, camera.aspect / 1.5) * fade : 0;
+  const oy = wide ? 0 : (cur.oyFrac ?? .22) * h * fade;
+  camera.setViewOffset(w, h, ox, oy, w, h);
+  renderer.render(scene, camera);
+}
+addEventListener('themechange', e => setTheme(e.detail));
+setTheme(window.__theme || 'titanium');
+requestAnimationFrame(frame);
+</script>
+
+</body></html>

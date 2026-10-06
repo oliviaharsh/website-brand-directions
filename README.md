@@ -1,5 +1,25 @@
 # Website Brand Directions
 
+## Latest: 3D Brand Lab (round 2)
+
+**[Open the live 3D Brand Lab](https://oliviaharsh.github.io/website-brand-directions/3d/)**
+
+Five new brand themes, each with a live, scroll-driven 3D hero, its own palette and font pairing. Switch themes with the bar at the bottom or keys 1–5, move the mouse to tilt the object, and scroll to watch the 3D story. Click any colour to copy its hex code.
+
+| # | Theme | Real-world reference | Fonts | 3D hero |
+|---|---|---|---|---|
+| 1 | **Titanium Lab** (recommended) | Anodised aerospace titanium, exploded-view drawings | Archivo Expanded + Geist | Machined plates for each service split into an exploded view |
+| 2 | Jewellery Quarter | Birmingham goldsmith workshops | Bodoni Moda Italic + Hanken Grotesk | Molten gold settles into a polished form |
+| 3 | Optical | Lens labs, International Klein Blue | Schibsted Grotesk + Instrument Sans | Glass prism splits blue bars into rainbow edges |
+| 4 | Stepwell | Gujarat stepwells, Jamnagar brass | Syne + Figtree | Camera descends a brass-and-sandstone stepwell |
+| 5 | Jasper | Wedgwood jasperware porcelain | Fraunces + Outfit | Porcelain pebbles lift and float |
+
+"Studio" is a placeholder wordmark until the business name is chosen.
+
+---
+
+## Round 1: static concept boards
+
 Four visual directions for a web development, booking systems, automation and AI studio.
 
 ## View the comparison
