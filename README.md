@@ -1,17 +1,20 @@
 # Avantix Labs: Brand Directions
 
-## A note for you
+## A note for Parth
 
-Hey! This is where Harsh is collecting the look of **Avantix Labs**: our website theme and logo. There are two things to look at, and each takes about five minutes:
+Hey Parth! This is where I'm putting together the look of **Avantix Labs**: our website theme and logo. There are two things to look at, and each takes about five minutes:
 
-1. **Logos:** [open the logo concepts](https://oliviaharsh.github.io/website-brand-directions/logos/). There are six ideas, built on the Sculpted Ivory theme (ivory, espresso and bronze, Instrument Serif + Manrope). Harsh's current pick is **01 Interlock**.
+1. **Logos:** [open the logo concepts](https://oliviaharsh.github.io/website-brand-directions/logos/). There are six ideas, built on the Sculpted Ivory theme (ivory, espresso and bronze, Instrument Serif + Manrope). My current pick is **01 Interlock**.
 2. **3D website themes:** [open the 3D Brand Lab](https://oliviaharsh.github.io/website-brand-directions/3d/). There are five themes with live 3D. Switch with the bar at the bottom and scroll down to see the 3D story.
 
-**What we need from you:** your favourite logo and your favourite website theme, plus anything you'd change. A screenshot with a comment works fine. It's best to view on a laptop; on a phone it works but the 3D is lighter.
+**What I need from you:** your favourite logo and your favourite website theme, plus anything you'd change. A screenshot with a comment works fine. It's best to view on a laptop; on a phone it works but the 3D is lighter.
 
 Things to know:
 - "Studio" on the 3D page is a placeholder from before the name was chosen.
 - Before we register the name or a logo, we still need to do a UK trade-mark search for "Avantix".
+
+Thanks,
+Harsh
 
 ---
 
