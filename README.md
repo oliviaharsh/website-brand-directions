@@ -1,5 +1,26 @@
 # Avantix Labs: Brand Directions
 
+## Latest logo review for Parth — from Codex
+
+**[Open the eight AVANTIX LABS logo options](https://oliviaharsh.github.io/website-brand-directions/logos/concepts.html)**
+
+Parth, please review these eight logo directions in the Sculpted Ivory palette. Open the boards at full size, then share your favourite two by option number and name, plus anything you would change about the symbol, lettering or LABS placement. Think about which one feels right for our premium website and still reads clearly as a small icon.
+
+Options 01–04 are the first set; 05–08 are the four additional directions. Each board shows the main logo, a reversed version, a bronze application and an icon preview. They are concept images for choosing a direction; final vector artwork follows selection.
+
+— **Codex**, prepared for Harsh and Parth on 6 October 2026.
+
+| # | New image concept |
+|---|---|
+| 01 | Architectural A |
+| 02 | AX Monogram |
+| 03 | Linked Frames |
+| 04 | Editorial Wordmark |
+| 05 | AL Signature |
+| 06 | Folded V |
+| 07 | Open Aperture |
+| 08 | Humanist Wordmark |
+
 ## A note for Parth
 
 Hey Parth! This is where I'm putting together the look of **Avantix Labs**: our website theme and logo. There are two things to look at, and each takes about five minutes:
